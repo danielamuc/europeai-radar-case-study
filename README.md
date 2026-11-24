@@ -7,6 +7,12 @@ read, the *Weekly Europe Stand*, and an *Events* tab lists in-person AI events i
 
 [App Store](https://apps.apple.com/app/id6783374358) · [europeairadar.com](https://europeairadar.com)
 
+<p align="center">
+  <img src="images/weekly.png" width="300" alt="The Weekly Europe Stand tab: a strategic read on where Europe stands in AI, with linked sources">
+  &nbsp;&nbsp;
+  <img src="images/events.png" width="300" alt="The Events tab: in-person AI events across Europe, filterable by country and city">
+</p>
+
 I am the founder and product lead. I built it with AI coding agents (Claude Code): I owned the
 product, the specs, the evaluation and every decision; the agents wrote most of the code. This
 repository tells the story of the product and its AI system. The app's own code is private.
