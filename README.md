@@ -33,7 +33,8 @@ system at once: **relevance, accuracy and cost.**
 | Live on the App Store | since July 2026 |
 | Sources | 8 pan-European outlets, 30 national outlets in 17 countries, Google News searches in 27 countries' own languages |
 | Stories read per day | about 500 |
-| Share of shown stories that pass the editorial bar | **39% → about 90%** (see Evaluation) |
+| Share of shown stories that pass the editorial bar (precision) | **39% → 93%** (see Evaluation) |
+| Share of the right stories the pipeline finds (recall) | **53% → 83%** |
 | Running cost of all AI | **under CHF 5 a month** (hard cap set in Google AI Studio) |
 | Human approval | every Weekly and every events update |
 
@@ -84,30 +85,54 @@ weak; the job was too crowded.
 
 Each step has a short goal and hand-picked examples instead of a long rule list.
 
-## 2. Evaluation before changes
+## 2. Evaluation: how quality is measured
 
 Nothing changes in the app without a score.
 
-- **Test set:** 200 stories sampled from what the app showed, dropped, held back and never read,
-  in more than 20 languages, labelled *keep*, *drop* or *look deeper*. Labels were made blind to
+**The test set**
+- **200 real stories** sampled from what the app showed, dropped, held back and never read, in
+  more than 20 languages, each labelled *keep*, *drop* or *look deeper*. Labels were made blind to
   what the app had decided.
-- **Editorial rules from the founder:** I decided 32 hard cases myself (Is a European minister's
-  opinion news? A national survey with no country named? A local AI meetup?). Those decisions
-  became six written rules, and the rest of the set was labelled by them.
-- **Examples are never taken from the test set**, so the score is not flattered.
+- **Editorial rules from the founder:** I decided the 32 hardest cases myself (Is a European
+  minister's opinion news? A national survey with no country named? A local AI meetup?). Those
+  decisions became six written rules, and the other 168 stories were labelled by them.
+- **Examples in the prompts are never taken from the test set**, so the score is not flattered.
+- **The whole pipeline is scored**, Gate → Writer → Checker, not one step alone. Every score is
+  the average of two runs, because models answer slightly differently each time.
 
-| Version | Precision (kept stories that are right) | Recall (right stories that were kept) |
-|---|---|---|
-| Old single prompt | 39% | 53% |
-| Gate, Gemini 3.1 Flash-Lite | ~77% | ~81% |
-| Gate, Gemini 3.8 Flash | ~90% | ~73% |
-| Gate + Checker (estimate) | ~88–91% | ~70–76% |
+**The metrics**
+- **Precision:** of the stories the app shows, how many belong there (noise).
+- **Recall:** of the stories that belong, how many the app finds (missed news).
+- **Accuracy:** share of all show / hide decisions that are right.
+- **F1:** one number that balances precision and recall.
 
-*Honest note:* the rules were tuned after seeing these results, so these are development scores.
-A fresh held-out set gives the final number.
+| Version | Precision | Recall | Accuracy | F1 |
+|---|---|---|---|---|
+| One big prompt (until Nov 2026) | 39% | 53% | – | – |
+| Three steps, first rules (24 Nov 2026) | 95% | 71% | 89% | 0.82 |
+| **Three steps, rules after the first shadow night (live since 25 Nov 2026)** | **93%** | **83%** | **92%** | **0.88** |
 
-**Rollout:** the new steps first ran in *shadow mode* next to the old job, writing only a log,
-before they replaced it.
+**Shadow night before the switch.** The new steps first ran one night next to the old job,
+writing only a log. On 766 real stories the old job would have shown 516, the new steps 175: most
+of the difference was non-European noise (a US Senate bill, Apple rumours, stock tips). Reading
+the 68 cards the Checker had dropped showed two problems:
+- **It was stricter than the rules**, re-judging relevance instead of checking facts. Now it
+  checks facts, and a wrong country is corrected, never a reason to drop.
+- **It did not know today's date.** It dropped a story about AI at the COP 31 climate summit
+  because, from its training, COP 31 was still in the future. Both steps now get the date and
+  trust the source over their memory.
+
+The fixes brought back 30 of the 68 stories, while 58 of 60 good cards stayed unchanged, and the
+test-set score went from 0.82 to 0.88 (F1). Only then did the new steps replace the old job.
+
+**What the numbers do not show yet**
+- These are development scores: the rules were refined after seeing results. A fresh held-out
+  set will give the final number.
+- **The next bottleneck is visible in the data.** About half of the right stories reach us only as
+  a Google News headline, with no article text. The app holds those until a second outlet gives
+  real text, so readers see fewer of them than the pipeline finds. An AI search tool could fill
+  the gap, but Google's terms allow search-grounded results only for the person who asked, shown
+  unmodified, so the plan is to add more outlets' own feeds instead.
 
 ## 3. Cost as a design constraint
 
@@ -137,6 +162,8 @@ If no draft arrives by Monday noon, a GitHub Action opens an issue to alert me.
 
 - **Split the job before you upgrade the model.** The same cheap model got it right with one job.
 - **Measure first.** A 200-story test set turned "the feed feels noisy" into 39% and a target.
+- **Tell the model what day it is.** Its knowledge ends before today, so a current event can look
+  like a future or invented one.
 - **Write the editorial rules down.** The hardest part was deciding what counts, not the code.
 - **Read the terms.** Google's terms allow only paid API use for apps used in the EEA, Switzerland
   and the UK, and forbid using search-grounding links to find pages to crawl. Both changed the design.
