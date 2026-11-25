@@ -8,9 +8,11 @@ read, the *Weekly Europe Stand*, and an *Events* tab lists in-person AI events i
 [App Store](https://apps.apple.com/app/id6783374358) · [europeairadar.com](https://europeairadar.com)
 
 <p align="center">
-  <img src="images/weekly.png" width="300" alt="The Weekly Europe Stand tab: a strategic read on where Europe stands in AI, with linked sources">
-  &nbsp;&nbsp;
-  <img src="images/events.png" width="300" alt="The Events tab: in-person AI events across Europe, filterable by country and city">
+  <img src="images/today.png" width="250" alt="The Today tab: Europe's AI news summarised in English, every story linked to its source">
+  &nbsp;
+  <img src="images/weekly.png" width="250" alt="The Weekly Europe Stand tab: a strategic read on where Europe stands in AI, with linked sources">
+  &nbsp;
+  <img src="images/events.png" width="250" alt="The Events tab: in-person AI events across Europe, filterable by country and city">
 </p>
 
 I am the founder and product lead. I built it with AI coding agents (Claude Code): I owned the
